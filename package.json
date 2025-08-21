@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "http://wentao23334.github.io/Yang-s-lab-CAD-viewer",
+  "homepage": "https://wentao23334.github.io/Yang-s-lab-CAD-viewer",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
