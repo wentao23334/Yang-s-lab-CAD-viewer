@@ -30,6 +30,12 @@ interface ViewerState {
 
   currentModel: string;
   setCurrentModel: (model: string) => void;
+
+  isGridVisible: boolean;
+  toggleGrid: () => void;
+
+  backgroundColor: string;
+  setBackgroundColor: (color: string) => void;
 }
 
 export const useViewerStore = create<ViewerState>((set) => ({
@@ -61,4 +67,10 @@ export const useViewerStore = create<ViewerState>((set) => ({
 
   currentModel: 'IR H-Cell.glb', // Default model
   setCurrentModel: (model) => set({ currentModel: model }),
+
+  isGridVisible: true,
+  toggleGrid: () => set((state) => ({ isGridVisible: !state.isGridVisible })),
+
+  backgroundColor: '#ffffff',
+  setBackgroundColor: (color) => set({ backgroundColor: color }),
 }));

@@ -10,7 +10,9 @@ import { useViewerStore } from '../state/viewerStore';
 
 export default function CanvasScene() {
   const modelBounds = useViewerStore((state) => state.modelBounds);
-  const currentModel = useViewerStore((state) => state.currentModel); // Get currentModel from store
+  const currentModel = useViewerStore((state) => state.currentModel);
+  const isGridVisible = useViewerStore((state) => state.isGridVisible);
+  const backgroundColor = useViewerStore((state) => state.backgroundColor);
 
   // Calculate grid position based on model bounds
   const gridPosition = modelBounds 
@@ -19,6 +21,7 @@ export default function CanvasScene() {
 
   return (
     <Canvas camera={{ position: [5, 5, 5], fov: 35 }}>
+      <color attach="background" args={[backgroundColor]} />
       <ambientLight intensity={1.5} />
       <directionalLight position={[10, 10, 5]} intensity={2} />
       <Environment preset="city" background={false} />
@@ -26,7 +29,7 @@ export default function CanvasScene() {
       <Labels />
       <DisplayModeHandler />
       <CameraManager />
-      <Grid position={gridPosition} infiniteGrid />
+      {isGridVisible && <Grid position={gridPosition} infiniteGrid />}
       <OrbitControls makeDefault />
     </Canvas>
   );

@@ -37,7 +37,6 @@ export default function MaterialPanel() {
 
     if (!baseMaterial) return;
 
-    // Clone the material if it's the original one or the highlight material
     if (selectedMesh.material === originalMaterials.get(selectedMesh.uuid) || isHighlightMaterial(selectedMesh.material)) {
       selectedMesh.material = (baseMaterial as THREE.Material).clone();
     }
@@ -48,10 +47,9 @@ export default function MaterialPanel() {
     mat.metalness = newMetalness;
     mat.roughness = newRoughness;
     mat.opacity = newOpacity;
-    mat.transparent = newOpacity < 1.0; // Enable transparency if opacity is less than 1
+    mat.transparent = newOpacity < 1.0;
     mat.needsUpdate = true;
 
-    // Update current material in store
     setCurrentMaterial(selectedMesh.uuid, mat);
 
     setColor(newColor);
@@ -106,6 +104,30 @@ export default function MaterialPanel() {
     }
   };
 
+  const getPresetNameFromMaterial = (material: THREE.MeshStandardMaterial | undefined): string => {
+    if (!material) return "";
+
+    const matchedPreset = materialPresets.find(p => {
+      const presetColor = new THREE.Color(p.color);
+      const tolerance = 0.001;
+      return (
+        presetColor.getHexString() === material.color.getHexString() &&
+        Math.abs(p.metalness - material.metalness) < tolerance &&
+        Math.abs(p.roughness - material.roughness) < tolerance &&
+        Math.abs(p.opacity - material.opacity) < tolerance
+      );
+    });
+    return matchedPreset ? matchedPreset.name : "";
+  };
+
+  let currentPresetName = '';
+  if (selectedMesh) {
+    const materialToShow = (isHighlightMaterial(selectedMesh.material)
+      ? originalMaterials.get(selectedMesh.uuid)
+      : selectedMesh.material) as THREE.MeshStandardMaterial | undefined;
+    currentPresetName = getPresetNameFromMaterial(materialToShow);
+  }
+
   const styles = {
     label: { margin: '10px 0 5px 0', display: 'block' },
     input: { width: '100%', boxSizing: 'border-box' as 'border-box' },
@@ -122,7 +144,7 @@ export default function MaterialPanel() {
         <div>
           <div>
             <label style={styles.label}>Material Presets</label>
-            <select onChange={handlePresetChange} style={styles.select} defaultValue="">
+            <select onChange={handlePresetChange} value={currentPresetName} style={styles.select}>
               <option value="" disabled>Select a preset</option>
               {materialPresets.map(preset => (
                 <option key={preset.name} value={preset.name}>{preset.name}</option>
